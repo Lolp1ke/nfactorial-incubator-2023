@@ -30,8 +30,16 @@ class FieldLogic {
 		const pathToDb = DBPath + "\\" + dbName + ".json";
 
 		try {
+			if (!value) return res.status(409).json({ message: "Value is empty" });
 			db.tables.forEach((table, tableIndex) => {
+				console.log(table[tableName]);
+
+				if (!table[tableName]) return;
 				table[tableName].forEach((record) => {
+					console.log(record, recordName);
+
+					if (!record[recordName]) return;
+
 					record[recordName].push({
 						value: value,
 						createdAt: new Date().getTime(),

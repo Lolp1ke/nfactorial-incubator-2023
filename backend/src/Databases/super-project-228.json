@@ -1,1 +1,0 @@
-{"tables":[{"Users":[{"Login":[{"value":"test","createdAt":1682245089919,"alteredAt":1682245089919},{"value":"lolp1ke","createdAt":1682245439950,"alteredAt":1682245439950}]}]}],"structures":[{"Users":[{"Login":{"type":"string","required":true,"unique":false}}]}]}

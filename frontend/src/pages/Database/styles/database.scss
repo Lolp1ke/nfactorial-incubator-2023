@@ -119,7 +119,15 @@
 		@include flex(row, normal, center, 20px);
 	}
 	&__field-data {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+
 		@include flex(row, normal, center, 10px);
+	}
+	&__field-image {
+		width: 64px;
+		flex: 1;
 	}
 	&__field-text {
 		font-size: 24px;

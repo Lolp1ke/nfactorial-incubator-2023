@@ -1,52 +1,20 @@
 import { useEffect, useRef, useState } from "react";
-import axios, { AxiosResponse } from "axios";
 import { Link } from "react-router-dom";
 
 import { IDatabaseList } from "@shared/types/DBTypes";
 
 import "./styles/home.scss";
+import { useDB } from "../../context/DBContext.tsx";
 
 export default function Home() {
 	const [databaseList, setDatabaseList] = useState<IDatabaseList[]>([]);
 	const [search, setSearch] = useState<string>("");
 
 	const dbNameRef = useRef<HTMLInputElement>(null);
-
-	async function getDBs() {
-		return await axios({
-			method: "GET",
-			url: `${import.meta.env.VITE_BACKEND_IP}/api/db/get-all`,
-		}).then((data: AxiosResponse<IDatabaseList[]>) => {
-			return data.data;
-		});
-	}
-
-	async function handleDeleteBD({ name }: { name: string }) {
-		await axios({
-			method: "POST",
-			url: `${import.meta.env.VITE_BACKEND_IP}/api/db/delete`,
-			data: {
-				name: name,
-			},
-		}).then(() => {
-			window.location.reload();
-		});
-	}
-
-	async function handleCreateDB() {
-		if (!dbNameRef.current) return;
-
-		await axios({
-			method: "POST",
-			url: `${import.meta.env.VITE_BACKEND_IP}/api/db/create`,
-			data: { name: dbNameRef.current.value.split(" ").join("-") },
-		}).then(() => {
-			window.location.reload();
-		});
-	}
+	const { getAll, createDB, deleteDB } = useDB();
 
 	useEffect(() => {
-		Promise.all([getDBs()]).then((data) => {
+		Promise.all([getAll()]).then((data) => {
 			setDatabaseList(data[0]);
 		});
 	}, []);
@@ -69,8 +37,11 @@ export default function Home() {
 					<form
 						onSubmit={(e) => {
 							e.preventDefault();
+							if (!dbNameRef.current) return;
 
-							handleCreateDB().then();
+							createDB({
+								dbName: dbNameRef.current.value,
+							}).then();
 						}}
 						className="home__actions"
 					>
@@ -110,14 +81,16 @@ export default function Home() {
 										View
 									</Link>
 									<div className="home__actions">
-										<button className="home__action edit" type={"button"}>
+										<Link to={"/db/" + filteredDb.name} className="home__database-link">
 											Edit
-										</button>
+										</Link>
 										<button
 											className="home__action delete"
 											type={"button"}
 											onClick={() => {
-												handleDeleteBD({ name: filteredDb.name }).then();
+												deleteDB({
+													dbName: filteredDb.name,
+												}).then();
 											}}
 										>
 											Delete

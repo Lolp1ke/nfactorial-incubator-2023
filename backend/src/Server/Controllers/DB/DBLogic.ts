@@ -17,7 +17,9 @@ const defaultDB = {
 class DBLogic {
 	public async create(req: Request<any, any, IDatabase>, res: Response, next: NextFunction) {
 		const { name } = req.body;
-		const pathToDb = DBPath + "\\" + name + ".json";
+		const fixedDbName: string = name.trim().toLowerCase().replace(/ /g, "");
+
+		const pathToDb = DBPath + "\\" + fixedDbName + ".json";
 
 		try {
 			const exist = fs.existsSync(pathToDb);

@@ -23,7 +23,7 @@ class TableLogic {
 		const { dbRaw, tableName, dbName } = req.body;
 		const pathToDb: string = DBPath + "\\" + dbName + ".json";
 
-		const fixedTableName: string = tableName.toLowerCase().trim().replace(/ /g, "-");
+		const fixedTableName: string = tableName.toLowerCase().trim().replace(/ /g, "");
 
 		try {
 			dbRaw.tables.push({ [fixedTableName]: [] });
@@ -47,9 +47,10 @@ class TableLogic {
 		const pathToDb: string = DBPath + "\\" + dbName + ".json";
 
 		try {
-			dbRaw.tables.map((table, key) => {
+			dbRaw.tables.map((table, tableIndex) => {
 				if (table[tableName]) {
-					dbRaw.tables.splice(key, 1);
+					dbRaw.tables.splice(tableIndex, 1);
+					dbRaw.structures.splice(tableIndex, 1);
 				}
 			});
 

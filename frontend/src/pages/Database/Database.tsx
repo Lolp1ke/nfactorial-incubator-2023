@@ -1,48 +1,22 @@
 import { useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import axios from "axios";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { urlParams } from "../../App.tsx";
 import { FieldTypes, IDatabase } from "@shared/types/DBTypes";
 
 import "./styles/database.scss";
 
-import FieldValues from "@pages/Database/components/Field/FieldValues.tsx";
+import FieldValues from "./components/Field/FieldValues.tsx";
 
 import { useDB } from "../../context/DBContext.tsx";
 import { useTable } from "../../context/TableContext.tsx";
 import { useRecord } from "../../context/RecordContext.tsx";
+import { useField } from "../../context/FieldContext.tsx";
 
 export default function Database() {
 	const [database, setDatabase] = useState<IDatabase>({
-		tables: [
-			{
-				table1: [
-					{
-						name: [
-							{
-								value: "sad",
-								createdAt: 0,
-								alteredAt: 0,
-							},
-						],
-					},
-				],
-			},
-		],
-		structures: [
-			{
-				table1: [
-					{
-						name: {
-							type: "string",
-							required: true,
-							unique: false,
-						},
-					},
-				],
-			},
-		],
+		tables: [],
+		structures: [],
 	});
 
 	const dbName = useParams<urlParams>().dbname!;
@@ -51,70 +25,32 @@ export default function Database() {
 	const typeChooseRef = useRef<HTMLSelectElement>(null);
 	const requiredRef = useRef<HTMLInputElement>(null);
 	const uniqueRef = useRef<HTMLInputElement>(null);
-	const recordNameRef = useRef<HTMLInputElement>(null);
+	// const recordNameRef = useRef<HTMLInputElement>(null);
 
 	const redirectTo = useNavigate();
 
 	const { deleteDB, getOne } = useDB();
 	const { addTable, deleteTable } = useTable();
 	const { addRecord } = useRecord();
-	async function handleAddRecord({
-		tableName,
-		recordName,
-		type,
-		required,
-		unique,
-	}: {
-		tableName: string;
-		recordName: string;
-		type: string;
-		required: boolean;
-		unique: boolean;
-	}) {
-		await axios({
-			method: "POST",
-			url: `${import.meta.env.VITE_BACKEND_IP}/api/record/add`,
-			data: {
-				db: database,
-				dbName: dbName,
-				tableName: tableName,
-				recordName: recordName,
-				type: type,
-				required: required,
-				unique: unique,
-			},
-		}).then(() => {
-			window.location.reload();
-		});
-	}
-	async function handleAddField({
-		tableName,
-		recordName,
-		value,
-	}: {
-		tableName: string;
-		recordName: string;
-		value: string;
-	}) {
-		await axios({
-			method: "POST",
-			url: `${import.meta.env.VITE_BACKEND_IP}/api/field/add`,
-			data: {
-				db: database,
-				dbName: dbName,
-				tableName: tableName,
-				recordName: recordName,
-				value: value,
-			},
-		}).then(() => {
-			window.location.reload();
+	const { addField } = useField();
+
+	async function imageToString({ file }: { file: File }) {
+		return await new Promise((resolve, reject) => {
+			const reader = new FileReader();
+			reader.readAsDataURL(file);
+			reader.onload = () => {
+				if (!reader.result) return reject(new Error("Something went wrong"));
+				const base64 = reader.result.toString();
+
+				return resolve(base64);
+			};
+			reader.onerror = (error) => reject(error);
 		});
 	}
 
 	useEffect(() => {
 		Promise.all([getOne({ dbName: dbName })]).then((data) => {
 			if (!data[0]) return redirectTo("/");
-
 			setDatabase(data[0]);
 		});
 	}, []);
@@ -124,6 +60,8 @@ export default function Database() {
 			<div className="database__container">
 				<div className="database__info">
 					<h3 className="database__title">{dbName}</h3>
+					<Link to={"/"}>Home Page</Link>
+
 					<div className="database__actions">
 						<form
 							className="database__action"
@@ -141,6 +79,7 @@ export default function Database() {
 							className="database__action"
 							onSubmit={(e) => {
 								e.preventDefault();
+
 								if (!tableNameRef.current) return;
 
 								addTable({
@@ -177,7 +116,6 @@ export default function Database() {
 										onSubmit={(e) => {
 											e.preventDefault();
 
-											if (!recordNameRef.current) return;
 											if (!typeChooseRef.current) return;
 											if (!requiredRef.current) return;
 											if (!uniqueRef.current) return;
@@ -186,19 +124,11 @@ export default function Database() {
 												database: database,
 												dbName: dbName,
 												tableName: currentTable,
-												recordName: recordNameRef.current.value,
+												recordName: (e.currentTarget[0] as HTMLInputElement).value,
 												type: typeChooseRef.current.value as FieldTypes,
 												required: requiredRef.current.checked,
 												unique: uniqueRef.current.checked,
 											}).then();
-
-											// handleAddRecord({
-											// 	tableName: currentTable,
-											// 	recordName: recordNameRef.current.value,
-											// 	type: typeChooseRef.current.value,
-											// 	required: requiredRef.current.checked,
-											// 	unique: uniqueRef.current.checked,
-											// }).then();
 										}}
 									>
 										<div className="database__action">
@@ -207,7 +137,6 @@ export default function Database() {
 												className="database__input-field"
 												placeholder={"RecordName"}
 												required={true}
-												ref={recordNameRef}
 											/>
 											<select name="type" id="type" required={true} ref={typeChooseRef}>
 												<option value="string">String</option>
@@ -253,35 +182,61 @@ export default function Database() {
 												<h3 className="database__field-title">{currentRecord}</h3>
 												<form
 													className="database__field-add"
-													onSubmit={(e) => {
+													onSubmit={async (e) => {
 														e.preventDefault();
+														const reader = new FileReader();
+														let imageAsBase64: string | null = null;
 
-														console.log(fieldRef);
-														if (!fieldRef.current) return;
+														if (fieldRef.current) {
+															if (fieldRef.current.files) {
+																imageAsBase64 = (await imageToString({
+																	file: fieldRef.current.files[0],
+																})) as string;
+																reader.readAsDataURL(fieldRef.current.files[0]);
+															}
+														}
 
-														handleAddField({
+														addField({
+															database: database,
+															dbName: dbName,
 															tableName: currentTable,
 															recordName: currentRecord,
-															value: fieldRef.current.value,
+															value: imageAsBase64
+																? imageAsBase64
+																: (e.currentTarget[0] as HTMLInputElement).value,
 														}).then();
 													}}
 												>
 													{currentStructure.type === "image" ? (
-														<button
-															className="database__button create"
-															type={"button"}
-															onClick={() => {
-																if (!fieldRef.current) return;
+														<>
+															<button
+																className="database__button create"
+																type={"button"}
+																onClick={() => {
+																	if (!fieldRef.current) return;
 
-																fieldRef.current.click();
-															}}
-														>
-															<input type="file" hidden={true} ref={fieldRef} />
-															Upload image
-														</button>
+																	fieldRef.current.click();
+																}}
+															>
+																<input
+																	type="file"
+																	hidden={true}
+																	onChange={() => {
+																		if (!fieldRef.current) return;
+																		if (!fieldRef.current.files) return;
+
+																		alert("Image selected");
+																	}}
+																	accept={"image/*"}
+																	ref={fieldRef}
+																/>
+																Choose image
+															</button>
+															<button className="database__button create">Upload</button>
+														</>
 													) : (
 														<>
-															<input type="text" required={true} ref={fieldRef} />
+															<input type="text" required={true} />
 															<button className="database__button create" type={"submit"}>
 																Insert
 															</button>

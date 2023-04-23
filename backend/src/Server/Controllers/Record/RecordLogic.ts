@@ -19,9 +19,7 @@ class RecordLogic {
 		const { db, dbName, tableName, recordName, type, required, unique } = req.body;
 		const pathToDb: string = DBPath + "\\" + dbName + ".json";
 
-		const fixedRecordName: string = recordName.trim().toLowerCase().replace(/ /g, "-");
-
-		console.log(fixedRecordName);
+		const fixedRecordName: string = recordName.trim().toLowerCase().replace(/ /g, "");
 
 		try {
 			db.tables.forEach((table, tableIndex) => {

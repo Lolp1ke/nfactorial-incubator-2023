@@ -1,4 +1,4 @@
-import express, { Express, json } from "express";
+import express, { Express } from "express";
 import cors from "cors";
 
 import DBRouter from "@routes/DB/DBRouter";
@@ -16,7 +16,8 @@ class Server {
 
 	constructor() {
 		this.server.use(cors());
-		this.server.use(json());
+		this.server.use(express.json({ limit: "50mb" }));
+		this.server.use(express.urlencoded({ limit: "50mb", extended: true, parameterLimit: 50000 }));
 
 		this.server.use("/api/db", this.DBRouter.router);
 		this.server.use("/api/table", this.TableRouter.router);
