@@ -1,0 +1,93 @@
+@import "@assets/styles/mixins.scss";
+
+.home {
+	height: 100vh;
+	width: 100vw;
+	@include flex(column, center, center, 20px);
+
+	&__container {
+		@include flex(column, normal, normal, 20px);
+	}
+
+	// .home__info
+	&__info {
+		width: 100%;
+		@include flex(row, space-between, center, 20px);
+	}
+
+	// .home__title
+	&__title {
+		font-weight: 400;
+	}
+
+	// .home__input-field
+	&__input-field {
+		@include reset();
+		background-color: #ffffff;
+		padding: 5px 20px;
+		border-radius: 10px;
+	}
+
+	// .home__create
+	&__create {
+		padding: 10px 20px;
+		border-radius: 20px;
+		background-color: #ffffff;
+		color: #000000;
+	}
+
+	// .home__databases
+	&__databases {
+		width: 100%;
+		@include flex(column, space-between, center, 20px);
+	}
+
+	// .home__database
+	&__database {
+		width: 100%;
+		@include flex(row, space-between, center, 20px);
+	}
+
+	// .home__article
+	&__article {
+		@include flex(column, normal, flex-start, 5px);
+	}
+
+	// .home__database-name
+	&__database-name {
+	}
+
+	// .home__database-size
+	&__database-size {
+	}
+
+	// .home__database-date
+	&__database-date {
+	}
+
+	// .home__database-link
+	&__database-link {
+		padding: 10px 20px;
+		background-color: white;
+		border-radius: 20px;
+		color: #000000;
+	}
+
+	// .home__actions
+	&__actions {
+		@include flex(row, normal, center, 20px);
+	}
+
+	// .home__action
+	&__action {
+		padding: 10px 20px;
+		border-radius: 20px;
+
+		&.edit {
+			background-color: green;
+		}
+		&.delete {
+			background-color: #a63636;
+		}
+	}
+}

@@ -1,0 +1,65 @@
+@import url("https://fonts.googleapis.com/css2?family=Tinos:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+
+@import "@assets/styles/mixins.scss";
+
+:root {
+	--main-color: "";
+
+	--bg-color: #000000;
+
+	--main-font: "Tinos", serif;
+}
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+::selection {
+	background-color: #7e7b7b;
+	color: #ffffff;
+}
+::-webkit-scrollbar {
+	width: 0;
+	scrollbar-width: none;
+}
+html {
+	scroll-behavior: smooth;
+}
+[class*="__container"] {
+	width: 90%;
+	margin: 0 auto !important;
+}
+#root {
+	min-height: 100vh;
+	background-color: var(--bg-color);
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+label,
+li {
+	cursor: default;
+	font-family: var(--main-font);
+	color: #ffffff;
+}
+button {
+	cursor: pointer;
+	font-family: var(--main-font);
+	color: #ffffff;
+	@include reset();
+}
+input {
+	font-family: var(--main-font);
+}
+a {
+	text-decoration: none;
+	color: #ffffff;
+}
+ul,
+ol {
+	list-style: none;
+}

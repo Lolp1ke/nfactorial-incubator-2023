@@ -1,0 +1,19 @@
+{
+	"compilerOptions": {
+		"module": "NodeNext",
+		"target": "ES6",
+		"types": ["node"],
+		"sourceMap": true,
+		"strict": true,
+		"allowJs": false,
+		"allowSyntheticDefaultImports": true,
+		"resolveJsonModule": true,
+		"baseUrl": ".",
+		"paths": {
+			"@shared/*": ["../shared/*"],
+			"@controllers/*": ["./src/Server/Controllers/*"],
+			"@routes/*": ["./src/Server/Routes/*"]
+		}
+	},
+	"exclude": ["node_modules", "Databases"]
+}

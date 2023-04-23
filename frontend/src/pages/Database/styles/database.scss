@@ -1,0 +1,144 @@
+@import "@assets/styles/mixins.scss";
+
+.database {
+	width: 100vw;
+	height: 100vh;
+	overflow: auto;
+
+	&__container {
+		@include flex(column, normal, normal, 20px);
+		padding: 20px 0;
+	}
+
+	// .database__info
+	&__info {
+		@include flex(row, space-between, center, 20px);
+	}
+
+	// .database__title
+	&__title {
+		font-size: 28px;
+		font-weight: 500;
+	}
+
+	// .database__actions
+	&__actions {
+		@include flex(row, space-between, center, 20px);
+	}
+
+	// .database__action
+	&__action {
+		@include flex(row, space-between, center, 5px);
+	}
+	&__action-button {
+		width: 50%;
+		padding: 5px 10px;
+		background-color: gray;
+		border-radius: 20px;
+	}
+
+	// .database__button
+	&__button {
+		padding: 5px 20px;
+		border-radius: 20px;
+
+		&.create {
+			background-color: green;
+		}
+		&.delete {
+			background-color: #a63636;
+		}
+	}
+
+	// .database__input-field
+	&__input-field {
+		@include reset();
+		background-color: #ffffff;
+		padding: 5px 10px;
+		border-radius: 10px;
+	}
+
+	// .database__tables
+	&__tables {
+		@include flex(column, normal, normal, 20px);
+	}
+
+	// .database__tables-info
+	&__tables-info {
+		width: 100%;
+		@include flex(row, normal, center, 10px);
+		& p {
+			flex: 1;
+		}
+	}
+	&__table-info {
+		width: 100%;
+		@include flex(row, space-between, center, 10px);
+	}
+
+	// .database__table
+	&__table {
+		@include flex(column, space-between, normal, 30px);
+		background-color: #5e0404;
+		padding: 20px 10px;
+	}
+
+	// .database__table-name
+	&__table-name {
+	}
+
+	&__table-delete {
+		background-color: #7e7b7b;
+		padding: 5px 20px;
+		border-radius: 20px;
+	}
+
+	// .database__table-items
+	&__table-items {
+		@include flex(column, normal, normal, 10px);
+	}
+
+	// .database__table-item
+	&__table-item {
+		@include flex(row, normal, normal, 10px);
+
+		& p,
+		& div {
+			flex: 1;
+			text-align: left;
+		}
+	}
+	&__field {
+		@include flex(column, normal, normal, 20px);
+	}
+	&__field-info {
+		width: 100%;
+		@include flex(row, normal, center, 0);
+	}
+	&__field-item {
+		@include flex(row, normal, center, 20px);
+	}
+	&__field-data {
+		@include flex(row, normal, center, 10px);
+	}
+	&__field-text {
+		font-size: 24px;
+		flex: 1;
+	}
+
+	// .database__tree
+	&__tree {
+		@include flex(column, normal, normal, 20px);
+	}
+
+	// .database__tree-title
+	&__tree-title {
+		font-size: 24px;
+		font-weight: 600;
+	}
+
+	// .database__tree-text
+	&__tree-text {
+		white-space: pre-wrap;
+	}
+}
